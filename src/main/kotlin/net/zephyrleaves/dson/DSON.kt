@@ -13,7 +13,10 @@ fun dson(init: DSON.() -> Unit): DSON {
     return dson
 }
 
-class DSON : Node(), ObjectTrait
+class DSON : Node(), ObjectTrait {
+
+//    fun
+}
 
 
 

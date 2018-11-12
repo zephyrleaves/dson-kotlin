@@ -23,6 +23,7 @@ dependencies {
 
   testCompile 'org.jetbrains.kotlin:kotlin-test-testng'
   testCompile 'org.testng:testng:6.13.1'
+  testCompile 'com.fasterxml.jackson.module:jackson-module-kotlin:2.9.7'
 }
 
 compileKotlin {
