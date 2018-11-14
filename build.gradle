@@ -19,6 +19,12 @@ repositories {
 
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+  compile "org.jetbrains.kotlin:kotlin-script-runtime"
+  compile "org.jetbrains.kotlin:kotlin-compiler-embeddable"
+  compile "org.jetbrains.kotlin:kotlin-script-util"
+
+
+
 
 
   testCompile 'org.jetbrains.kotlin:kotlin-test-testng'

@@ -1,0 +1,42 @@
+import net.zephyrleaves.dson.*
+
+obj {
+    val payload = bindings["outerPayload"] as Map<String , Any?>
+    v("default", payload)
+    arr("my_array") {
+        (payload["array"] as List<Int>).forEach {
+            v(it + 1)
+        }
+    }
+    v("sum", (payload["array"] as List<Int>).sum())
+    v("test big_data") {
+        hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *>
+    }
+    arr("all_array") {
+        v(100)
+        v(101)
+        v(102)
+        (payload["array"] as List<Int>).forEach { v ->
+            v(v + 1000)
+        }
+        v(2000)
+        for (v in payload["array"] as List<Int>) {
+            v(v + 2000)
+        }
+        v(3000)
+        v { hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *> }
+        net.zephyrleaves.dson.obj {
+            v("over", true)
+        }
+    }
+    v("filter") {
+        payload.filterKeys { it == "a" || it == "b" } +
+                (payload["complex"] as Map<*, *>).filterKeys { it -> it == "d" || it == "f" }
+    }
+    obj("filter2") {
+        v("a", payload["a"])
+        v("b", payload["b"])
+        v("d", (payload["complex"] as Map<*, *>)["d"])
+        v("f", (payload["complex"] as Map<*, *>)["f"])
+    }
+}

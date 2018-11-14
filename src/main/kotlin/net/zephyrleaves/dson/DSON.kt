@@ -29,6 +29,14 @@ object DSON {
     fun from(v: ArrayValue): List<Any?> {
         return v.data()
     }
+
+    fun from(v: Any): Any {
+        return when (v) {
+            is ObjectValue -> from(v)
+            is ArrayValue -> from(v)
+            else -> throw Exception("v only is ObjectValue or ArrayValue")
+        }
+    }
 }
 
 

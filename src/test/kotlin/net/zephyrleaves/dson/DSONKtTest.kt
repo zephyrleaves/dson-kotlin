@@ -3,7 +3,9 @@ package net.zephyrleaves.dson
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.jetbrains.kotlin.script.jsr223.KotlinJsr223JvmLocalScriptEngine
 import org.testng.annotations.Test
+import javax.script.ScriptEngineManager
 
 /**
  * @author zephyrleaves
@@ -12,31 +14,31 @@ import org.testng.annotations.Test
 class DSONKtTest {
 
     val mapper = jacksonObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
+    val data = """{
+               "a": "a",
+               "b": "b",
+               "c": "c",
+               "complex": {
+                 "a": 1,
+                 "b": 2,
+                 "c": 3,
+                 "d": true,
+                 "e": false,
+                 "f": null
+               },
+               "array": [
+                 1,
+                 2,
+                 3,
+                 4,
+                5
+               ]
+             }"""
+    val outerPayload = mapper.readValue<Map<String, Any?>>(data)
+
 
     @Test
     fun testDson() {
-
-        val data = """{
-            "a": "a",
-            "b": "b",
-            "c": "c",
-            "complex": {
-              "a": 1,
-              "b": 2,
-              "c": 3,
-              "d": true,
-              "e": false,
-              "f": null
-            },
-            "array": [
-              1,
-              2,
-              3,
-              4,
-             5
-            ]
-          }"""
-        val outerPayload = mapper.readValue<Map<String, Any?>>(data)
 
 
         val d = obj {
@@ -72,8 +74,28 @@ class DSONKtTest {
                 payload.filterKeys { it == "a" || it == "b" } +
                         (payload["complex"] as Map<*, *>).filterKeys { it -> it == "d" || it == "f" }
             }
+            obj("filter2") {
+                v("a", payload["a"])
+                v("b", payload["b"])
+                v("d", (payload["complex"] as Map<*, *>)["d"])
+                v("f", (payload["complex"] as Map<*, *>)["f"])
+            }
         }
 
-        println(mapper.writeValueAsString(DSON.from(d)))
+        val from = DSON.from(d)
+        println(mapper.writeValueAsString(from))
+    }
+
+    @Test
+    fun testScript() {
+        val resource = this::class.java.classLoader.getResourceAsStream("simple.txt")
+        val se = ScriptEngineManager().getEngineByExtension("kts") as KotlinJsr223JvmLocalScriptEngine
+        val bindings = se.createBindings()
+        bindings["outerPayload"] = outerPayload
+        val compiler = se.compile(resource.bufferedReader(Charsets.UTF_8))
+        val obj = compiler.eval(bindings)
+        println(DSON.from(obj))
     }
 }
+
+
