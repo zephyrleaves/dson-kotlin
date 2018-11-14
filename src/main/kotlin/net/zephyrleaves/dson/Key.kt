@@ -8,8 +8,56 @@ package net.zephyrleaves.dson
 
 abstract class Key(private val key: String) : Node()
 
-class ObjectKey(key: String) : Key(key), ObjectTrait
+class ObjectKey(key: String) : Key(key) {
+    fun obj(key: String, init: ObjectKey.() -> Unit) {
+        val myKey = ObjectKey(key)
+        myKey.init()
+        children.add(myKey)
+    }
 
-class ArrayKey(key: String) : Key(key), ArrayTrait
+
+    fun arr(key: String, init: ArrayKey.() -> Unit) {
+        val myKey = ArrayKey(key)
+        myKey.init()
+        children.add(myKey)
+    }
+
+    fun v(key: String, value: () -> Any?) {
+        val myKey = ValueKey(key, value())
+        children.add(myKey)
+    }
+
+    fun v(key: String, value: Any?) {
+        val myKey = ValueKey(key, value)
+        children.add(myKey)
+    }
+}
+
+class ArrayKey(key: String) : Key(key) {
+    fun obj(init: ObjectValue.() -> Unit) {
+        val myKey = ObjectValue()
+        myKey.init()
+        children.add(myKey)
+    }
+
+
+    fun arr(init: ArrayValue.() -> Unit) {
+        val myKey = ArrayValue()
+        myKey.init()
+        children.add(myKey)
+    }
+
+    fun v(value: () -> Any?) {
+        val myKey = ValueValue(value())
+        children.add(myKey)
+    }
+
+    fun v(value: Any?) {
+        val myKey = ValueValue(value)
+        children.add(myKey)
+    }
+}
 
 class ValueKey(key: String, val value: Any?) : Key(key)
+
+

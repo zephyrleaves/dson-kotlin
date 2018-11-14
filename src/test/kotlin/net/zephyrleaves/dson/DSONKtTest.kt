@@ -38,43 +38,38 @@ class DSONKtTest {
         val outerPayload = mapper.readValue<Map<String, Any?>>(data)
 
 
-        val d = dson {
+        val d = obj {
             val payload = outerPayload
-            value("default", payload)
+            v("default", payload)
             arr("my_array") {
-                val tmp1 = payload["array"] as List<*>
-                for (v in tmp1) {
-                    value(v as Int + 1)
+                (payload["array"] as List<Int>).forEach {
+                    v(it + 1)
                 }
             }
-            value("sum", (payload["array"] as List<Int>).sum())
-            value("test big_data") {
+            v("sum", (payload["array"] as List<Int>).sum())
+            v("test big_data") {
                 hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *>
             }
             arr("all_array") {
-                value(100)
-                value(101)
-                value(102)
-                val tmp1 = payload["array"] as List<Int>
-                for (v in tmp1) {
-                    value(v + 1000)
+                v(100)
+                v(101)
+                v(102)
+                (payload["array"] as List<Int>).forEach { v ->
+                    v(v + 1000)
                 }
-                value(2000)
-                for (v in tmp1) {
-                    value(v + 2000)
+                v(2000)
+                for (v in payload["array"] as List<Int>) {
+                    v(v + 2000)
                 }
-                value(3000)
+                v(3000)
                 hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *>
                 obj {
-                    value("over", true)
+                    v("over", true)
                 }
             }
             obj("filter") {
-                payload.filterKeys {
-                    it == "a" || it == "b"
-                } + (payload["complex"] as Map<*, *>).filterKeys {
-                    it == "d" || it == "f"
-                }
+                payload.filterKeys { it -> it == "a" || it == "b" } +
+                        (payload["complex"] as Map<*, *>).filterKeys { it -> it == "d" || it == "f" }
             }
         }
 
