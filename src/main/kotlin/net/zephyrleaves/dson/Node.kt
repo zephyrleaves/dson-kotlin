@@ -11,4 +11,6 @@ annotation class DsonMarker
 @DsonMarker
 abstract class Node {
     protected val children = arrayListOf<Node>()
+
+    internal abstract fun data(): Any?
 }

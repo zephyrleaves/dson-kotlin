@@ -6,7 +6,7 @@ package net.zephyrleaves.dson
  *
  */
 
-abstract class Key(private val key: String) : Node()
+abstract class Key(internal val key: String) : Node()
 
 class ObjectKey(key: String) : Key(key) {
     fun obj(key: String, init: ObjectKey.() -> Unit) {
@@ -30,6 +30,15 @@ class ObjectKey(key: String) : Key(key) {
     fun v(key: String, value: Any?) {
         val myKey = ValueKey(key, value)
         children.add(myKey)
+    }
+
+    override fun data(): Map<String, Any?> {
+        val result = linkedMapOf<String, Any?>()
+        children.forEach {
+            val node = it as Key
+            result[node.key] = node.data()
+        }
+        return result
     }
 }
 
@@ -56,8 +65,20 @@ class ArrayKey(key: String) : Key(key) {
         val myKey = ValueValue(value)
         children.add(myKey)
     }
+
+    override fun data(): List<Any?> {
+        val result = arrayListOf<Any?>()
+        children.forEach {
+            result.add(it.data())
+        }
+        return result
+    }
 }
 
-class ValueKey(key: String, val value: Any?) : Key(key)
+class ValueKey(key: String, val value: Any?) : Key(key) {
+    override fun data(): Any? {
+        return value
+    }
+}
 
 

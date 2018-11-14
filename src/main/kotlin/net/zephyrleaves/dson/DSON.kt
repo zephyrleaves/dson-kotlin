@@ -7,22 +7,28 @@ package net.zephyrleaves.dson
  */
 
 
-fun obj(init: ObjectValue.() -> Unit): Node {
+fun obj(init: ObjectValue.() -> Unit): ObjectValue {
     val dson = ObjectValue()
     dson.init()
     return dson
 }
 
-fun arr(init: ArrayValue.() -> Unit): Node {
+fun arr(init: ArrayValue.() -> Unit): ArrayValue {
     val dson = ArrayValue()
     dson.init()
     return dson
 }
 
 
-class DSON {
+object DSON {
 
-//    fun
+    fun from(v: ObjectValue): Map<String, Any?> {
+        return v.data()
+    }
+
+    fun from(v: ArrayValue): List<Any?> {
+        return v.data()
+    }
 }
 
 

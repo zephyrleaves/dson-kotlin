@@ -8,6 +8,7 @@ package net.zephyrleaves.dson
 abstract class Value : Node()
 
 open class ObjectValue : Value() {
+
     fun obj(key: String, init: ObjectKey.() -> Unit) {
         val myKey = ObjectKey(key)
         myKey.init()
@@ -28,6 +29,15 @@ open class ObjectValue : Value() {
     fun v(key: String, value: Any?) {
         val myKey = ValueKey(key, value)
         children.add(myKey)
+    }
+
+    override fun data(): Map<String, Any?> {
+        val result = linkedMapOf<String, Any?>()
+        children.forEach {
+            val node = it as Key
+            result[node.key] = node.data()
+        }
+        return result
     }
 }
 
@@ -54,6 +64,18 @@ class ArrayValue : Value() {
         val myKey = ValueValue(value)
         children.add(myKey)
     }
+
+    override fun data(): List<Any?> {
+        val result = arrayListOf<Any?>()
+        children.forEach {
+            result.add(it.data())
+        }
+        return result
+    }
 }
 
-class ValueValue(val value: Any?) : Value()
+class ValueValue(val value: Any?) : Value() {
+    override fun data(): Any? {
+        return value
+    }
+}

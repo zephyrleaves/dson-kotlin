@@ -1,5 +1,6 @@
 package net.zephyrleaves.dson
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import org.testng.annotations.Test
@@ -10,7 +11,7 @@ import org.testng.annotations.Test
  */
 class DSONKtTest {
 
-    val mapper = jacksonObjectMapper()
+    val mapper = jacksonObjectMapper().enable(SerializationFeature.INDENT_OUTPUT)
 
     @Test
     fun testDson() {
@@ -62,17 +63,17 @@ class DSONKtTest {
                     v(v + 2000)
                 }
                 v(3000)
-                hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *>
+                v { hashMapOf("1" to "11", "2" to "22") + payload["complex"] as Map<*, *> }
                 obj {
                     v("over", true)
                 }
             }
-            obj("filter") {
-                payload.filterKeys { it -> it == "a" || it == "b" } +
+            v("filter") {
+                payload.filterKeys { it == "a" || it == "b" } +
                         (payload["complex"] as Map<*, *>).filterKeys { it -> it == "d" || it == "f" }
             }
         }
 
-        println(mapper.writeValueAsString(d))
+        println(mapper.writeValueAsString(DSON.from(d)))
     }
 }
