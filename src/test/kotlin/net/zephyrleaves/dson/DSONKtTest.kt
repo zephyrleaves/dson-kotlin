@@ -43,27 +43,27 @@ class DSONKtTest {
             val payload = outerPayload
             v("default", payload)
             arr("my_array") {
-                payload["array"].safeAs<List<Int>>()?.forEach {
+                payload["array"]?.safeAs<List<Int>>()?.forEach {
                     v(it + 1)
                 }
             }
-            v("sum", payload["array"].safeAs<List<Int>>()?.sum())
+            v("sum", payload["array"]?.safeAs<List<Int>>()?.sum())
             v("test big_data") {
-                mapOf("1" to "11", "2" to "22") + payload["complex"].safeAs<Map<*, *>>()!!
+                mapOf("1" to "11", "2" to "22") + payload["complex"]?.safeAs<Map<*, *>>()!!
             }
             arr("all_array") {
                 v(100)
                 v(101)
                 v(102)
-                payload["array"].safeAs<List<Int>>()?.forEach { v ->
+                payload["array"]?.safeAs<List<Int>>()?.forEach { v ->
                     v(v + 1000)
                 }
                 v(2000)
-                payload["array"].safeAs<List<Int>>()?.forEach { v ->
+                payload["array"]?.safeAs<List<Int>>()?.forEach { v ->
                     v(v + 2000)
                 }
                 v(3000)
-                v { hashMapOf("1" to "11", "2" to "22") + payload["complex"].safeAs<Map<*, *>>()!! }
+                v { hashMapOf("1" to "11", "2" to "22") + payload["complex"]?.safeAs<Map<*, *>>()!! }
                 obj {
                     v("over", true)
                 }

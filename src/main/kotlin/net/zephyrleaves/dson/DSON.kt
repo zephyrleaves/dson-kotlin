@@ -23,7 +23,7 @@ fun arr(init: ArrayValue.() -> Unit): ArrayValue {
     return dson
 }
 
-inline fun <reified T> Any?.safeAs(): T? =
+inline fun <reified T> Any.safeAs(): T? =
         if (this is T)
             this
         else
