@@ -80,16 +80,16 @@ class DSONKtTest {
             }
         }
 
-        val from = DSON.from(d)
+        val from = from(d)
         println(mapper.writeValueAsString(from))
     }
 
     @Test
     fun testScript() {
         val resource = this::class.java.classLoader.getResourceAsStream("simple.txt")
-        val context = DSON.compile(resource.reader().readText())
+        val context = compile(resource.reader().readText())
         val obj = context.eval(mapOf("outerPayload" to outerPayload))
-        println(DSON.from(obj))
+        println(from(obj))
     }
 }
 

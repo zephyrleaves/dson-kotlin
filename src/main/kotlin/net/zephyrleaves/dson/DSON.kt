@@ -30,37 +30,34 @@ inline fun <reified T> Any.safeAs(): T? =
             null
 
 
-object DSON {
+private val ScriptEngine = ScriptEngineManager().getEngineByExtension("kts") as KotlinJsr223JvmLocalScriptEngine
 
-    internal val ScriptEngine = ScriptEngineManager().getEngineByExtension("kts") as KotlinJsr223JvmLocalScriptEngine
+fun from(v: ObjectValue): Map<String, Any?> {
+    return v.data()
+}
 
-    fun from(v: ObjectValue): Map<String, Any?> {
-        return v.data()
+fun from(v: ArrayValue): List<Any?> {
+    return v.data()
+}
+
+fun from(v: Any): Any {
+    return when (v) {
+        is ObjectValue -> from(v)
+        is ArrayValue -> from(v)
+        else -> throw Exception("Value can only be ObjectValue or ArrayValue!")
     }
+}
 
-    fun from(v: ArrayValue): List<Any?> {
-        return v.data()
-    }
+fun compile(code: String): DSONCompileContext {
+    return DSONCompileContext(ScriptEngine.compile(code))
 
-    fun from(v: Any): Any {
-        return when (v) {
-            is ObjectValue -> from(v)
-            is ArrayValue -> from(v)
-            else -> throw Exception("Value can only be ObjectValue or ArrayValue!")
-        }
-    }
-
-    fun compile(code: String): DSONCompileContext {
-        return DSONCompileContext(ScriptEngine.compile(code))
-
-    }
 }
 
 
 class DSONCompileContext(private val compiledScript: CompiledScript) {
 
     fun eval(bindings: Map<String, Any?>): Any {
-        val b = DSON.ScriptEngine.createBindings()
+        val b = ScriptEngine.createBindings()
         b.putAll(bindings)
         return compiledScript.eval(b)
     }
