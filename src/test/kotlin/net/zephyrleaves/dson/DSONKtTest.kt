@@ -80,7 +80,7 @@ class DSONKtTest {
             }
         }
 
-        val from = from(d)
+        val from = toData(d)
         println(mapper.writeValueAsString(from))
     }
 
@@ -89,7 +89,7 @@ class DSONKtTest {
         val resource = this::class.java.classLoader.getResourceAsStream("simple.txt")
         val context = compile(resource.reader().readText())
         val obj = context.eval(mapOf("outerPayload" to outerPayload))
-        println(from(obj))
+        println(toData(obj))
     }
 }
 

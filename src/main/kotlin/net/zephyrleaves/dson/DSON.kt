@@ -32,18 +32,18 @@ inline fun <reified T> Any.safeAs(): T? =
 
 private val ScriptEngine = ScriptEngineManager().getEngineByExtension("kts") as KotlinJsr223JvmLocalScriptEngine
 
-fun from(v: ObjectValue): Map<String, Any?> {
+fun toData(v: ObjectValue): Map<String, Any?> {
     return v.data()
 }
 
-fun from(v: ArrayValue): List<Any?> {
+fun toData(v: ArrayValue): List<Any?> {
     return v.data()
 }
 
-fun from(v: Any): Any {
+fun toData(v: Any): Any {
     return when (v) {
-        is ObjectValue -> from(v)
-        is ArrayValue -> from(v)
+        is ObjectValue -> toData(v)
+        is ArrayValue -> toData(v)
         else -> throw Exception("Value can only be ObjectValue or ArrayValue!")
     }
 }
